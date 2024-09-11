@@ -9,3 +9,7 @@ Launcher
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 Go to steam, click games at the top, click "Add a Non-Steam Game To My Library...", add the "apbcfg.exe".
 This allows you to launch the game through steam without the apb launcher with no shortcut.
+
+Installer
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Select your game Directory, Decide whether you want the Extras or not and Install.
