@@ -2,7 +2,7 @@ APB
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 Config
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
-Copy&Paste/Drag&Drop the folders in "apb" into your "APB Reloaded" directory, if you haven't changed this the default will be 
+Copy & Paste/Drag & Drop the folders in "apb" into your "APB Reloaded" directory, if you haven't changed this the default will be 
 "C:\Program Files (x86)\Steam\steamapps\common\APB Reloaded".
 
 Launcher
