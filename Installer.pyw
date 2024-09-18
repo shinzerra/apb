@@ -83,13 +83,18 @@ def download_and_extract_github_zip_async(github_url, extract_to, install_Extras
         zip_file_path = 'apbcfg.zip'  # Temporary ZIP file name
         
         try:
-            progress_callback("Downloading ZIP file from GitHub...", 10)
+            progress_callback("Checking for latest version...", 0)
             response = requests.get(github_url, stream=True)
             response.raise_for_status()
 
+            # Calculate total size for progress
             total_size = int(response.headers.get('content-length', 0))
+            if total_size == 0:
+                total_size = 1  # Avoid division by zero
+
             downloaded = 0
 
+            progress_callback("Downloading ZIP file from GitHub...", 10)
             with open(zip_file_path, 'wb') as file:
                 for data in response.iter_content(1024):
                     downloaded += len(data)
@@ -152,9 +157,19 @@ def download_and_replace_commands(extract_to, progress_callback):
         response = requests.get(commands_zip_url, stream=True)
         response.raise_for_status()
 
-        with open(zip_file_path, 'wb') as file:
-            file.write(response.content)
+        # Calculate total size for progress
+        total_size = int(response.headers.get('content-length', 0))
+        if total_size == 0:
+            total_size = 1  # Avoid division by zero
 
+        downloaded = 0
+        with open(zip_file_path, 'wb') as file:
+            for data in response.iter_content(1024):
+                downloaded += len(data)
+                file.write(data)
+                progress = (downloaded / total_size) * 10 + 90
+                progress_callback(f"Downloading Shortened Commands... {int(progress)}%", progress)
+        
         progress_callback("Extracting Shortened Commands...", 95)
         temp_extract_path = './temp_extract_commands'
         with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
@@ -163,8 +178,9 @@ def download_and_replace_commands(extract_to, progress_callback):
         # Find the Consolecommands.GER and replace it in the destination
         console_commands_file = find_subfolder(temp_extract_path, 'Consolecommands.GER')
         if console_commands_file:
-            destination_folder = os.path.join(extract_to, 'APBGame', 'Config', 'Consolecommands.GER')
-            shutil.copy2(console_commands_file, destination_folder)
+            destination_folder = os.path.join(extract_to, 'APBGame', 'Config')
+            os.makedirs(destination_folder, exist_ok=True)
+            shutil.copy2(console_commands_file, os.path.join(destination_folder, 'Consolecommands.GER'))
             progress_callback("Consolecommands.GER replaced!", 98)
 
     except Exception as e:
@@ -183,7 +199,7 @@ def start_download():
     
     install_Extras = Extras_var.get()
     install_commands = commands_var.get()
-    github_zip_url = 'https://github.com/shinzerra/apb/releases/download/APB/apbcfg.zip'
+    github_zip_url = 'https://github.com/shinzerra/apb/releases/download/apb1.0.3/apbcfg.zip'
     
     download_and_extract_github_zip_async(github_zip_url, folder, install_Extras, install_commands, update_progress)
 
